@@ -1,0 +1,34 @@
+= BROWSER-DEFRAG
+:toc:
+:toc-placement!:
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:status:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+*browser-defrag* is a tool for defragging browser's database files.
+It will help to reduce the storage size of browser's profile.
+
+toc::[]
+
+== Installation
+
+=== Cargo
+
+*browser-defrag* can be used without installation by run:
+
+[source,console]
+$ cargo run
+
+To install in `$HOME/.cargo/bin`, run:
+[source,console]
+$ cargo install --path .
+
+== License
+
+*link:./COPYING[GNU General Public License v3.0 or later]*
