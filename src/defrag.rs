@@ -38,6 +38,9 @@ impl Browser {
         }
     }
 
+    /// Return the list of fullpath of database files
+    ///
+    /// `func` - Specificed database listing function of a browser
     pub fn list_databases<F>(&mut self, func: F) -> Result<()>
     where
         F: FnOnce() -> Result<(PathBuf, Vec<PathBuf>)>,
