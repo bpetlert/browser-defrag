@@ -43,3 +43,8 @@ update-deps:
 makepkg:
   makepkg -p PKGBUILD.local
   git co PKGBUILD.local
+
+# Install in ~/.cargo/bin
+install:
+  cargo install --path .
+  strip --strip-all ~/.cargo/bin/browser-defrag
