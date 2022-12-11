@@ -29,6 +29,20 @@ To install in `$HOME/.cargo/bin`, run:
 [source,console]
 $ cargo install --path .
 
+== Support Browsers
+
+=== Linux
+
+* [ ] Firefox
+** [x] Single Profile
+** [ ] Multiple Profiles
+
+* [ ] Firefox Developer Edition
+** [x] Single Profile
+** [ ] Multiple Profiles
+
+* [ ] Chromium
+
 == License
 
 *link:./COPYING[GNU General Public License v3.0 or later]*
