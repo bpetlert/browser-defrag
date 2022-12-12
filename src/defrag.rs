@@ -172,13 +172,13 @@ impl Defragment for Database {
 impl std::fmt::Display for Browser {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         if self.profile_path.is_none() {
-            return write!(f, "{}: NONE", self.name);
+            return write!(f, "{}: NO PROFILE FOUND", self.name);
         }
 
-        if self.databases.is_none() {
+        if self.databases.is_none() || self.databases.as_ref().unwrap().is_empty() {
             return write!(
                 f,
-                "{browser_name}: {profile_path}\nNONE",
+                "{browser_name}: {profile_path}\nNO DATABASE FOUND",
                 browser_name = self.name,
                 profile_path = self.profile_path.as_ref().unwrap().display()
             );
