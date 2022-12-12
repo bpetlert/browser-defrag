@@ -10,10 +10,10 @@ use walkdir::WalkDir;
 
 /// Check whether a file is valid sqlite3 or not.
 ///
-/// first 16 bytes => The header string: "SQLite format 3\000"
+/// Check whether first 16 bytes of a file contains "SQLite format 3\000" or not.
 ///
-/// https://www.sqlite.org/fileformat.html
-pub fn is_sqlite_file(path: &Path) -> Result<bool> {
+/// See: https://www.sqlite.org/fileformat.html
+pub fn is_sqlite3_file(path: &Path) -> Result<bool> {
     let header_size: usize = 16;
     let mut header: Vec<u8> = Vec::with_capacity(header_size);
 
@@ -54,7 +54,7 @@ pub fn find_sqlite3_files(root: &Path, max_depth: usize) -> Result<Vec<PathBuf>>
         .filter_map(|entry| entry.ok())
         .map(|entry| entry.into_path())
         .filter(|path| path.metadata().map_or(false, |metadata| metadata.is_file()))
-        .filter(|db| match is_sqlite_file(db) {
+        .filter(|db| match is_sqlite3_file(db) {
             Ok(is_sqlite) => is_sqlite,
             Err(err) => {
                 debug!("{err:#}");
