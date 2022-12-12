@@ -1,7 +1,12 @@
-use std::{fs::File, io::Read, path::Path};
+use std::{
+    fs::File,
+    io::Read,
+    path::{Path, PathBuf},
+};
 
 use anyhow::{Context, Result};
-use tracing::trace;
+use tracing::{debug, trace};
+use walkdir::WalkDir;
 
 /// Check whether a file is valid sqlite3 or not.
 ///
@@ -39,4 +44,24 @@ pub fn is_sqlite_file(path: &Path) -> Result<bool> {
     }
 
     Ok(false)
+}
+
+/// Find all sqlite3 files in `root`
+pub fn find_sqlite3_files(root: &Path, max_depth: usize) -> Result<Vec<PathBuf>> {
+    let database_files: Vec<PathBuf> = WalkDir::new(root)
+        .max_depth(max_depth)
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .map(|entry| entry.into_path())
+        .filter(|path| path.metadata().map_or(false, |metadata| metadata.is_file()))
+        .filter(|db| match is_sqlite_file(db) {
+            Ok(is_sqlite) => is_sqlite,
+            Err(err) => {
+                debug!("{err:#}");
+                false
+            }
+        })
+        .collect();
+
+    Ok(database_files)
 }
