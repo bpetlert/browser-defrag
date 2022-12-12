@@ -19,6 +19,7 @@ pub struct Browser {
 #[derive(Debug)]
 pub struct Database {
     path: PathBuf,
+    profile_path: PathBuf,
     size_before: Option<u64>,
     size_after: Option<u64>,
     defrag: bool,
@@ -38,9 +39,10 @@ impl Browser {
         }
     }
 
-    /// Return the list of fullpath of database files
+    /// Update the list of database files
     ///
-    /// `func` - Specificed database listing function of a browser
+    /// `func` - Specificed database listing function of a browser,
+    /// which returns `(profile-path, list-of-fullpath-of-database-files)`
     pub fn list_databases<F>(&mut self, func: F) -> Result<()>
     where
         F: FnOnce() -> Result<(PathBuf, Vec<PathBuf>)>,
@@ -48,10 +50,13 @@ impl Browser {
         self.databases = Some(Vec::new());
 
         let (profile_path, db_paths) = func()?;
-        self.profile_path = Some(profile_path);
+        self.profile_path = Some(profile_path.clone());
 
         for path in db_paths {
-            self.databases.as_mut().unwrap().push(Database::new(&path));
+            self.databases
+                .as_mut()
+                .unwrap()
+                .push(Database::new(&profile_path, &path));
         }
 
         Ok(())
@@ -59,13 +64,18 @@ impl Browser {
 }
 
 impl Database {
-    pub fn new(path: &Path) -> Self {
+    pub fn new(profile_fullpath: &Path, db_fullpath: &Path) -> Self {
         Self {
-            path: path.to_path_buf(),
+            path: db_fullpath.to_path_buf(),
+            profile_path: profile_fullpath.to_path_buf(),
             size_before: None,
             size_after: None,
             defrag: false,
         }
+    }
+
+    pub fn relative_path(&self) -> Result<PathBuf> {
+        Ok(self.path.strip_prefix(&self.profile_path)?.to_path_buf())
     }
 
     pub fn database_size(&self) -> Result<u64> {
@@ -178,7 +188,7 @@ impl std::fmt::Display for Browser {
         if self.databases.is_none() || self.databases.as_ref().unwrap().is_empty() {
             return write!(
                 f,
-                "{browser_name}: {profile_path}\nNO DATABASE FOUND",
+                "{browser_name}: {profile_path}/\nNO DATABASE FOUND",
                 browser_name = self.name,
                 profile_path = self.profile_path.as_ref().unwrap().display()
             );
@@ -224,10 +234,10 @@ impl std::fmt::Display for Browser {
 
         write!(
             f,
-            "{browser_name}: {profile_path}\n{databases}\n{total_before:>total_col2$} => {total_diff_after:<total_col3$} {percent:>total_col4$}",
+            "{browser_name}: {profile_path}/\n{databases}\n{total_before:>total_col2$} => {total_diff_after:<total_col3$} {percent:>total_col4$}",
             browser_name = self.name,
             profile_path = self.profile_path.as_ref().unwrap().display(),
-            total_col2 = 56,
+            total_col2 = 71,
             total_col3 = 40,
             total_col4 = 20,
         )
@@ -254,8 +264,8 @@ impl std::fmt::Display for Database {
         write!(
             f,
             "{db_file:<col1_width$} {size_before:>col2_width$} => {size_diff_after:<col3_width$} {percent:>col4_width$}",
-            db_file = self.path.file_name().unwrap().to_str().unwrap(),
-            col1_width = 35,
+            db_file = self.relative_path().unwrap().display(),
+            col1_width = 50,
             col2_width = 20,
             col3_width = 40,
             col4_width = 20,
