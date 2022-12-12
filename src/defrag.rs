@@ -212,18 +212,24 @@ impl std::fmt::Display for Browser {
         let size_diff: f64 = total_after - total_before;
         let percent: f64 = size_diff * 100.0_f64 / (total_before);
 
+        let total_before = format_size_i(total_before, DECIMAL);
+
+        let total_diff_after = format!(
+            "( {diff} ) {after}",
+            diff = format_size_i(size_diff, DECIMAL),
+            after = format_size_i(total_after, DECIMAL),
+        );
+
+        let percent = format!("{:.2} %", percent);
+
         write!(
             f,
-            "{browser_name}: {profile_path}\n{databases}\n{total_before:>total_col1$} => ( {size_diff} ) {total_after:<total_col2$} {percent:>total_col3$}",
+            "{browser_name}: {profile_path}\n{databases}\n{total_before:>total_col2$} => {total_diff_after:<total_col3$} {percent:>total_col4$}",
             browser_name = self.name,
             profile_path = self.profile_path.as_ref().unwrap().display(),
-            total_before = format_size_i(total_before, DECIMAL),
-            total_col1 = 61,
-            total_after = format_size_i(total_after, DECIMAL),
-            total_col2 = 20,
-            size_diff = format_size_i(size_diff, DECIMAL),
-            percent = format!("{:.2} %", percent),
-            total_col3 = 20,
+            total_col2 = 56,
+            total_col3 = 40,
+            total_col4 = 20,
         )
     }
 }
@@ -234,17 +240,24 @@ impl std::fmt::Display for Database {
         let size_after: f64 = self.size_after.unwrap() as f64;
         let size_diff: f64 = size_after - size_before;
         let percent: f64 = size_diff * 100.0_f64 / size_before;
+
+        let size_before = format_size_i(size_before, DECIMAL);
+
+        let size_diff_after = format!(
+            "( {diff} ) {after}",
+            diff = format_size_i(size_diff, DECIMAL),
+            after = format_size_i(size_after, DECIMAL)
+        );
+
+        let percent = format!("{:.2} %", percent);
+
         write!(
             f,
-            "{db_file:col1_width$} {size_before:>col2_width$} => ( {size_diff} ) {size_after:<col3_width$} {percent:>col4_width$}",
+            "{db_file:<col1_width$} {size_before:>col2_width$} => {size_diff_after:<col3_width$} {percent:>col4_width$}",
             db_file = self.path.file_name().unwrap().to_str().unwrap(),
-            col1_width = 40,
-            size_before = format_size_i(size_before, DECIMAL),
+            col1_width = 35,
             col2_width = 20,
-            size_after = format_size_i(size_after, DECIMAL),
-            col3_width = 20,
-            size_diff = format_size_i(size_diff, DECIMAL),
-            percent = format!("{:.2} %", percent),
+            col3_width = 40,
             col4_width = 20,
         )
     }
