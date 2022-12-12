@@ -13,4 +13,5 @@ pub struct Arguments {
 #[derive(Debug, Clone, clap::ValueEnum)]
 pub enum BrowserName {
     Firefox,
+    Chromium,
 }

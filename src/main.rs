@@ -1,4 +1,5 @@
 mod args;
+mod chromium;
 mod common;
 mod defrag;
 mod firefox;
@@ -36,6 +37,13 @@ fn run() -> Result<()> {
         args::BrowserName::Firefox => {
             let mut browser = Browser::new("Firefox");
             browser.list_databases(firefox::list_db)?;
+            browser.defrag(arguments.dry_run)?;
+            let mut stdout = io::BufWriter::new(io::stdout().lock());
+            writeln!(stdout, "{browser}")?;
+        }
+        args::BrowserName::Chromium => {
+            let mut browser = Browser::new("Chromium");
+            browser.list_databases(chromium::list_db)?;
             browser.defrag(arguments.dry_run)?;
             let mut stdout = io::BufWriter::new(io::stdout().lock());
             writeln!(stdout, "{browser}")?;

@@ -11,6 +11,9 @@ run-debug +ARGS='':
 dry-run-firefox:
   RUST_BACKTRACE=1 RUST_LOG=browser_defrag=debug cargo run -- firefox --dry-run
 
+dry-run-chromium:
+  RUST_BACKTRACE=1 RUST_LOG=browser_defrag=debug cargo run -- chromium --dry-run
+
 test +CASES='':
   RUST_BACKTRACE=1 RUST_LOG=browser_defrag=debug cargo test -- {{CASES}}
 

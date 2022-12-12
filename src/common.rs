@@ -1,7 +1,7 @@
 use std::{fs::File, io::Read, path::Path};
 
 use anyhow::{Context, Result};
-use tracing::debug;
+use tracing::trace;
 
 /// Check whether a file is valid sqlite3 or not.
 ///
@@ -33,7 +33,7 @@ pub fn is_sqlite_file(path: &Path) -> Result<bool> {
             }
         }
         Err(err) => {
-            debug!("{err:#}");
+            trace!("{err:#}");
             return Ok(false);
         }
     }
