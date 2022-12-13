@@ -1,6 +1,6 @@
 [package]
 name = "browser-defrag"
-version = "0.2.0"
+version = "0.2.1"
 
 authors = ["Bhanupong Petchlert <bpetlert@gmail.com>"]
 
