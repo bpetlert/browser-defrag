@@ -4,14 +4,14 @@ use anyhow::{anyhow, bail, Result};
 use configparser::ini::Ini;
 use tracing::debug;
 
-use crate::common::find_sqlite3_files;
+use crate::{
+    common::find_sqlite3_files,
+    defrag::{Config, Database, DatabaseList},
+};
 
 /// Database listing function for Firefox and Firefox Developer Edition
-///
-/// Return `(profile-path, list-of-fullpath-of-database-files)`
-///
 // TODO: Support multiple profiles
-pub fn list_db() -> Result<(PathBuf, Vec<PathBuf>)> {
+pub fn list_db(config: Config) -> Result<Vec<DatabaseList>> {
     let profile_path: PathBuf = {
         // Firefox profile's root at $HOME/.mozilla/firefox
         let firefox_root: PathBuf = PathBuf::from(&env::var("HOME")?)
@@ -42,7 +42,15 @@ pub fn list_db() -> Result<(PathBuf, Vec<PathBuf>)> {
     };
 
     // Search all sqlite3 files
-    let database_files: Vec<PathBuf> = find_sqlite3_files(&profile_path, 2)?;
+    let database_files: Vec<PathBuf> = find_sqlite3_files(&profile_path, config.max_depth)?;
 
-    Ok((profile_path, database_files))
+    let database_lists: Vec<DatabaseList> = vec![DatabaseList {
+        profile_path,
+        databases: database_files
+            .into_iter()
+            .map(|path| Database::new(&path))
+            .collect::<Vec<Database>>(),
+    }];
+
+    Ok(database_lists)
 }

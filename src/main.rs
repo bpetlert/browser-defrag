@@ -3,6 +3,7 @@ mod chromium;
 mod common;
 mod defrag;
 mod firefox;
+mod report;
 
 use std::{
     io::{self, Write},
@@ -16,7 +17,7 @@ use tracing_subscriber::EnvFilter;
 
 use crate::{
     args::Arguments,
-    defrag::{Browser, Defragment},
+    defrag::{Browser, Config, Defragment},
 };
 
 fn run() -> Result<()> {
@@ -34,20 +35,31 @@ fn run() -> Result<()> {
     debug!("Run with {:?}", arguments);
 
     match arguments.browser {
-        args::BrowserName::Firefox => {
+        args::BrowserType::Firefox => {
+            let config = Config {
+                max_depth: arguments.max_depth,
+                profile_path: None,
+            };
+
             let mut browser = Browser::new("Firefox");
-            browser.list_databases(firefox::list_db)?;
+            browser.list_databases(firefox::list_db, config)?;
             browser.defrag(arguments.dry_run)?;
             let mut stdout = io::BufWriter::new(io::stdout().lock());
             writeln!(stdout, "{browser}")?;
         }
-        args::BrowserName::Chromium => {
+        args::BrowserType::Chromium => {
+            let config = Config {
+                max_depth: arguments.max_depth,
+                profile_path: None,
+            };
+
             let mut browser = Browser::new("Chromium");
-            browser.list_databases(chromium::list_db)?;
+            browser.list_databases(chromium::list_db, config)?;
             browser.defrag(arguments.dry_run)?;
             let mut stdout = io::BufWriter::new(io::stdout().lock());
             writeln!(stdout, "{browser}")?;
         }
+        args::BrowserType::Unknown { profile_path: _ } => todo!(),
     }
 
     Ok(())
