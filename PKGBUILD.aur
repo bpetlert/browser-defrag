@@ -1,0 +1,35 @@
+# Maintainer: Bhanupong Petchlert <bpetlert@gmail.com>
+pkgname=browser-defrag
+pkgver=0.2.1
+pkgrel=1
+pkgdesc="A tool for defragging browser's database files"
+arch=('x86_64')
+url="https://github.com/bpetlert/browser-defrag"
+license=('GPL-3.0-or-later')
+depends=(sqlite3)
+makedepends=(cargo)
+provides=("${pkgname}")
+conflicts=("${pkgname}")
+
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/bpetlert/${pkgname}/archive/${pkgver}.tar.gz")
+sha256sums=('')
+
+prepare() {
+  cd "${pkgname}-${pkgver}"
+  cargo fetch --locked --target "$CARCH-unknown-linux-gnu"
+}
+
+build() {
+  cd "${pkgname}-${pkgver}"
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+  cargo build  --frozen --release
+}
+
+package() {
+  cd "${pkgname}-${pkgver}"
+  install -Dm755 "target/release/browser-defrag" "$pkgdir/usr/bin/browser-defrag"
+
+  install -Dm644 "README.adoc" "$pkgdir/usr/share/doc/${pkgname}/README.adoc"
+  install -Dm644 "COPYING" "$pkgdir/usr/share/licenses/${pkgname}/COPYING"
+}
