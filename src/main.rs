@@ -4,6 +4,7 @@ mod common;
 mod defrag;
 mod firefox;
 mod report;
+mod unknown;
 
 use std::{
     io::{self, Write},
@@ -59,7 +60,18 @@ fn run() -> Result<()> {
             let mut stdout = io::BufWriter::new(io::stdout().lock());
             writeln!(stdout, "{browser}")?;
         }
-        args::BrowserType::Unknown { profile_path: _ } => todo!(),
+        args::BrowserType::Unknown { profile_path } => {
+            let config = Config {
+                max_depth: arguments.max_depth,
+                profile_path: Some(profile_path),
+            };
+
+            let mut browser = Browser::new("Unknown");
+            browser.list_databases(unknown::list_db, config)?;
+            browser.defrag(arguments.dry_run)?;
+            let mut stdout = io::BufWriter::new(io::stdout().lock());
+            writeln!(stdout, "{browser}")?;
+        }
     }
 
     Ok(())

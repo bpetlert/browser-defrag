@@ -14,6 +14,9 @@ dry-run-firefox:
 dry-run-chromium:
   RUST_BACKTRACE=1 RUST_LOG=browser_defrag=debug cargo run -- chromium --dry-run
 
+dry-run-unknown:
+  RUST_BACKTRACE=1 RUST_LOG=browser_defrag=debug cargo run -- unknown --dry-run --profile-path=$HOME/.config/chromium
+
 test +CASES='':
   RUST_BACKTRACE=1 RUST_LOG=browser_defrag=debug cargo test -- {{CASES}}
 
