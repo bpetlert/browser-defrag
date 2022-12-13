@@ -29,6 +29,15 @@ To install in `$HOME/.cargo/bin`, run:
 [source,console]
 $ cargo install --path .
 
+=== Arch Linux
+To build and install arch package from GIT source:
+
+[source,console]
+$ git clone https://github.com/bpetlert/browser-defrag.git
+$ cd browser-defrag
+$ makepkg -p PKGBUILD.local
+$ pacman -U browser-defrag-xxxx-1-x86_64.pkg.tar
+
 == Supported Browsers
 
 === Linux
@@ -44,6 +53,24 @@ $ cargo install --path .
 * [x] Chromium
 
 * [x] Unknown Browser: use a given profile's path
+
+== Usage
+
+To start defragging database files for a browser, use `browser-defrag <BROWSER-NAME>`.
+The name of supported browser can be found using `browser-defrag -h`.
+
+The maximum searching of descendent directory is default to 2.
+This can be changed by using `--max-depth <DEPTH>`
+
+To show the list of database files without defragging, uses `--dry-run`.
+
+.Defrag Firefox's database
+[source,console]
+$ browser-defrag firefox
+
+.Defrag unknown browser with a given profile path
+[source,console]
+$ browser-defrag unknown --profile-path=$HOME/.config/chromium
 
 == License
 
