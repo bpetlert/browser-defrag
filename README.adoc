@@ -29,7 +29,7 @@ To install in `$HOME/.cargo/bin`, run:
 [source,console]
 $ cargo install --path .
 
-== Support Browsers
+== Supported Browsers
 
 === Linux
 
@@ -41,7 +41,9 @@ $ cargo install --path .
 ** [x] Single Profile
 ** [ ] Multiple Profiles
 
-* [ ] Chromium
+* [x] Chromium
+
+* [x] Unknown Browser: use a given profile's path
 
 == License
 
