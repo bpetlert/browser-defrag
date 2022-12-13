@@ -53,9 +53,9 @@ impl std::fmt::Display for Browser {
 
             // Create table of database files
             let mut db_table: Vec<DatabaseReport> = Vec::new();
-            let mut total_before: u64 = 0;
-            let mut total_after: u64 = 0;
-            let mut total_changed: u64 = 0;
+            let mut total_before: f64 = 0.0;
+            let mut total_after: f64 = 0.0;
+            let mut total_changed: f64 = 0.0;
             for db in &database_list.databases {
                 let path: String = db
                     .path
@@ -71,12 +71,12 @@ impl std::fmt::Display for Browser {
                 };
 
                 let size_before: String = db.size_before.map_or("N/A".to_string(), |s| {
-                    total_before += s;
+                    total_before += s as f64;
                     format_size_i(s, BINARY)
                 });
 
                 let size_after: String = db.size_after.map_or("N/A".to_string(), |s| {
-                    total_after += s;
+                    total_after += s as f64;
                     format_size_i(s, BINARY)
                 });
 
@@ -84,7 +84,8 @@ impl std::fmt::Display for Browser {
                     if db.size_before.is_none() || db.size_after.is_none() {
                         "N/A".to_string()
                     } else {
-                        let diff = db.size_after.unwrap() - db.size_before.unwrap();
+                        let diff: f64 =
+                            db.size_after.unwrap() as f64 - db.size_before.unwrap() as f64;
                         total_changed += diff;
                         format_size_i(diff, BINARY)
                     }
@@ -94,8 +95,9 @@ impl std::fmt::Display for Browser {
                     if db.size_before.is_none() || db.size_after.is_none() {
                         "N/A".to_string()
                     } else {
-                        let diff: f64 = (db.size_after.unwrap() - db.size_before.unwrap()) as f64;
-                        let percent = (diff * 100.0_f64) / (db.size_before.unwrap() as f64);
+                        let diff: f64 =
+                            db.size_after.unwrap() as f64 - db.size_before.unwrap() as f64;
+                        let percent: f64 = (diff * 100.0_f64) / (db.size_before.unwrap() as f64);
                         format!("{percent:.2} %")
                     }
                 };
@@ -111,8 +113,7 @@ impl std::fmt::Display for Browser {
             }
 
             let total_percent: String = {
-                let percent: f64 =
-                    (total_after as f64 - total_before as f64) * 100.0_f64 / (total_before as f64);
+                let percent: f64 = (total_after - total_before) * 100.0_f64 / total_before;
                 format!("{percent:.2} %")
             };
 
