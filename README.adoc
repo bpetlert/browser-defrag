@@ -42,13 +42,13 @@ $ pacman -U browser-defrag-xxxx-1-x86_64.pkg.tar
 
 === Linux
 
-* [ ] Firefox
+* [x] Firefox
 ** [x] Single Profile
-** [ ] Multiple Profiles
+** [x] Multiple Profiles
 
-* [ ] Firefox Developer Edition
+* [x] Firefox Developer Edition
 ** [x] Single Profile
-** [ ] Multiple Profiles
+** [x] Multiple Profiles
 
 * [x] Chromium
 
