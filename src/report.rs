@@ -34,12 +34,12 @@ impl std::fmt::Display for Browser {
 
         let mut output = String::new();
         for database_list in self.database_lists.as_ref().unwrap() {
-            if database_list.databases.is_empty() {
+            if database_list.databases.is_none() {
                 write!(
                     &mut output,
                     "{browser_name}: {profile_path}/\nNO DATABASE FOUND",
                     browser_name = self.name,
-                    profile_path = database_list.profile_path.display()
+                    profile_path = database_list.path.display()
                 )?;
                 continue;
             }
@@ -48,7 +48,7 @@ impl std::fmt::Display for Browser {
                 &mut output,
                 "\n{browser_name}: {profile_path}/",
                 browser_name = self.name,
-                profile_path = database_list.profile_path.display()
+                profile_path = database_list.path.display()
             )?;
 
             // Create table of database files
@@ -56,10 +56,10 @@ impl std::fmt::Display for Browser {
             let mut total_before: f64 = 0.0;
             let mut total_after: f64 = 0.0;
             let mut total_changed: f64 = 0.0;
-            for db in &database_list.databases {
+            for db in database_list.databases.as_ref().unwrap() {
                 let path: String = db
                     .path
-                    .strip_prefix(&database_list.profile_path)
+                    .strip_prefix(&database_list.path)
                     .unwrap()
                     .to_str()
                     .unwrap()

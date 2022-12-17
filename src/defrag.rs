@@ -11,16 +11,17 @@ use tracing::error;
 #[derive(Debug)]
 pub struct Browser {
     pub name: String,
-    pub database_lists: Option<Vec<DatabaseList>>,
+    pub database_lists: Option<Vec<Profile>>,
 }
 
-#[derive(Debug)]
-pub struct DatabaseList {
-    pub profile_path: PathBuf,
-    pub databases: Vec<Database>,
+#[derive(Debug, PartialEq)]
+pub struct Profile {
+    pub name: String,
+    pub path: PathBuf,
+    pub databases: Option<Vec<Database>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Database {
     pub path: PathBuf,
     pub size_before: Option<u64>,
@@ -52,7 +53,7 @@ impl Browser {
     /// `func` - Specificed database listing function of a browser
     pub fn list_databases<F>(&mut self, func: F, config: Config) -> Result<()>
     where
-        F: FnOnce(Config) -> Result<Vec<DatabaseList>>,
+        F: FnOnce(Config) -> Result<Vec<Profile>>,
     {
         self.database_lists = Some(func(config)?);
         Ok(())
@@ -102,9 +103,13 @@ impl Defragment for Browser {
     }
 }
 
-impl Defragment for DatabaseList {
+impl Defragment for Profile {
     fn defrag(&mut self, dry_run: bool) -> Result<()> {
-        for db in self.databases.iter_mut() {
+        if self.databases.is_none() {
+            return Ok(());
+        }
+
+        for db in self.databases.as_mut().unwrap().iter_mut() {
             if let Err(err) = db.defrag(dry_run) {
                 error!("{err:#}");
             }
