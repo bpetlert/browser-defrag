@@ -84,7 +84,6 @@ impl Defragment for Browser {
             if sys
                 .processes()
                 .values()
-                .into_iter()
                 .any(|p| p.name().to_lowercase().contains(&self.name.to_lowercase()))
             {
                 bail!("Cannot defrag. `{}` is running!!!", self.name);
