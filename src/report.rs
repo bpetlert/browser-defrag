@@ -1,7 +1,10 @@
 use std::fmt::Write;
 
 use humansize::{format_size_i, BINARY};
-use tabled::{locator::ByColumnName, Alignment, Modify, Style, Table, Tabled};
+use tabled::{
+    settings::{locator::ByColumnName, Alignment, Modify, Style},
+    Table, Tabled,
+};
 
 use crate::defrag::Browser;
 
