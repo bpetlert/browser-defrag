@@ -8,8 +8,6 @@ url="https://github.com/bpetlert/browser-defrag"
 license=('GPL-3.0-or-later')
 depends=(sqlite3)
 makedepends=(cargo)
-provides=("${pkgname}")
-conflicts=("${pkgname}")
 
 # Build from local directory
 source=()

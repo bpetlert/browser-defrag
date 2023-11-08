@@ -8,8 +8,6 @@ url="https://github.com/bpetlert/browser-defrag"
 license=('GPL-3.0-or-later')
 depends=(sqlite3)
 makedepends=(cargo)
-provides=("${pkgname}")
-conflicts=("${pkgname}")
 
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/bpetlert/${pkgname}/archive/${pkgver}.tar.gz")
 sha256sums=('')
