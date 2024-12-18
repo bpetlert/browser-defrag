@@ -1,0 +1,11 @@
+{
+    "name": "browser-defrag",
+    "files": [
+        {
+            "git": 1
+        }
+    ],
+    "exclude_patterns": [
+        ".vscode"
+    ]
+}
