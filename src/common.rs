@@ -53,7 +53,7 @@ pub fn find_sqlite3_files(root: &Path, max_depth: usize) -> Result<Vec<PathBuf>>
         .into_iter()
         .filter_map(|entry| entry.ok())
         .map(|entry| entry.into_path())
-        .filter(|path| path.metadata().map_or(false, |metadata| metadata.is_file()))
+        .filter(|path| path.metadata().is_ok_and(|metadata| metadata.is_file()))
         .filter(|db| match is_sqlite3_file(db) {
             Ok(is_sqlite) => is_sqlite,
             Err(err) => {

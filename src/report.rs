@@ -2,7 +2,7 @@ use std::fmt::Write;
 
 use humansize::{format_size_i, BINARY};
 use tabled::{
-    settings::{locator::ByColumnName, Alignment, Modify, Style},
+    settings::{location::ByColumnName, Alignment, Modify, Style},
     Table, Tabled,
 };
 

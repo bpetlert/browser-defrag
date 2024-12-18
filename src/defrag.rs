@@ -4,7 +4,7 @@ use std::{
 };
 
 use anyhow::{bail, Context, Result};
-use sysinfo::{ProcessExt, System, SystemExt};
+use sysinfo::{ProcessesToUpdate, System};
 use tempfile::tempdir;
 use tracing::error;
 
@@ -80,12 +80,11 @@ impl Defragment for Browser {
         if !dry_run {
             // Check if browser is running?
             let mut sys = System::new();
-            sys.refresh_processes();
-            if sys
-                .processes()
-                .values()
-                .any(|p| p.name().to_lowercase().contains(&self.name.to_lowercase()))
-            {
+            sys.refresh_processes(ProcessesToUpdate::All, true);
+            if sys.processes().values().any(|p| {
+                let name = p.name().to_str().unwrap();
+                name.to_lowercase().contains(&self.name.to_lowercase())
+            }) {
                 bail!("Cannot defrag. `{}` is running!!!", self.name);
             }
         }
